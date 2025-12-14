@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,8 +22,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TableChart
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -91,8 +92,8 @@ fun FinancePlannerApp() {
     val screens = listOf(
         Screen("home", "Início") { Icon(Icons.Default.Home, contentDescription = null) },
         Screen("inputs", "Inputs") { Icon(Icons.Default.Settings, contentDescription = null) },
-        Screen("simulation", "Simulação") { Icon(Icons.Default.TableChart, contentDescription = null) },
-        Screen("dashboard", "Dashboard") { Icon(Icons.Default.Timeline, contentDescription = null) }
+        Screen("simulation", "Simulação") { Icon(Icons.Default.DateRange, contentDescription = null) },
+        Screen("dashboard", "Dashboard") { Icon(Icons.Default.Insights, contentDescription = null) }
     )
 
     var selected by rememberSaveable { mutableStateOf("home") }
@@ -499,7 +500,7 @@ private fun SimulationScreen(
                             dateRanges = ranges,
                             type = simulationType,
                             sourceAccount = simulationSource,
-                            sourceName = simulationAccountLabel.ifBlank { null }
+                            sourceName = simulationAccountLabel.takeIf { it.isNotBlank() }
                         )
                     )
                     simulationName = ""
@@ -573,8 +574,8 @@ private fun SimulationScreen(
                             dateRanges = ranges,
                             from = transferFrom,
                             to = transferTo,
-                            fromName = transferFromLabel.ifBlank { null },
-                            toName = transferToLabel.ifBlank { null }
+                            fromName = transferFromLabel.takeIf { it.isNotBlank() },
+                            toName = transferToLabel.takeIf { it.isNotBlank() }
                         )
                     )
                     transferName = ""
@@ -756,7 +757,7 @@ private fun BandChart(
             val widthStep = size.width / points
             totals.forEachIndexed { index, pair ->
                 val heightFactor = (pair.second - minValue) / range
-                val barHeight = height * heightFactor.toFloat()
+                val barHeight = size.height * heightFactor.toFloat()
                 drawRoundRect(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                     topLeft = androidx.compose.ui.geometry.Offset(x = widthStep * index, y = size.height - barHeight),
@@ -1009,10 +1010,8 @@ private fun nextAccount(current: AccountDestination): AccountDestination = when 
     AccountDestination.VALE -> AccountDestination.CHECKING
 }
 
-@Composable
 private fun positiveColor(): Color = Color(0xFF8FE1A3)
 
-@Composable
 private fun negativeColor(): Color = Color(0xFFFF6B6B)
 
 @Preview(showBackground = true)
