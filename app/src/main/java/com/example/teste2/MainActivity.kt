@@ -43,13 +43,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.teste2.model.AccountDestination
@@ -232,13 +234,13 @@ private fun HomeScreen(
     Spacer(Modifier.height(12.dp))
 
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        SummaryCard("Conta Corrente", checking)
-        SummaryCard("Caixinhas ($caixinhasCount)", totalCaixinhas)
+        SummaryCard("Conta Corrente", checking, modifier = Modifier.weight(1f))
+        SummaryCard("Caixinhas ($caixinhasCount)", totalCaixinhas, modifier = Modifier.weight(1f))
     }
     Spacer(Modifier.height(12.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        SummaryCard("Vales", vales)
-        SummaryCard("Dívida Cartão", -card, emphasizeNegative = true)
+        SummaryCard("Vales", vales, modifier = Modifier.weight(1f))
+        SummaryCard("Dívida Cartão", -card, emphasizeNegative = true, modifier = Modifier.weight(1f))
     }
     Spacer(Modifier.height(12.dp))
     SummaryCard("Liquidez (CC + Caixinhas)", total, modifier = Modifier.fillMaxWidth())
@@ -905,7 +907,7 @@ private fun InfoCard(title: String, subtitle: String, value: Double, onDelete: (
 private fun SummaryCard(
     title: String,
     value: Double,
-    modifier: Modifier = Modifier.weight(1f),
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     emphasizeNegative: Boolean = false
 ) {
@@ -1002,7 +1004,7 @@ private fun parseDateOr(default: LocalDate, input: String): LocalDate =
     runCatching { LocalDate.parse(input) }.getOrElse { default }
 
 @Composable
-private fun numberKeyboard() = androidx.compose.ui.text.input.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number)
+private fun numberKeyboard() = KeyboardOptions(keyboardType = KeyboardType.Number)
 
 private fun nextAccount(current: AccountDestination): AccountDestination = when (current) {
     AccountDestination.CHECKING -> AccountDestination.CAIXINHA
